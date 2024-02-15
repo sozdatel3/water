@@ -6,4 +6,4 @@ class Container(models.Model):
     initial_temperature = models.FloatField("Начальная температура °C")
     target_temperature = models.FloatField("Конечная температура °C")
     efficiency = models.FloatField("КПД %", default=100)
-    power = models.FloatField("Мощность (кВт)", default=100)
+    # power = models.FloatField("Мощность (кВт)", default=100)

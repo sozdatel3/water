@@ -79,7 +79,7 @@ def simulate_heating_process(volume, initial_temp, target_temp, efficiency, powe
     c = 4.187  # удельная теплоемкость воды в кДж/(кг·°C)
 
     # Рассчитываем расход электроэнергии в кВт·ч, учитывая КПД
-    energy_kWh = (3600 * (T2 - T1) * V * c) / (efficiency/100 * 3600)
+    energy_kWh = ((T2 - T1) * V * c) / (efficiency/100)*0.027777777777
 
     # Рассчитываем время в часах, необходимое для нагрева
     time_hours = energy_kWh / power

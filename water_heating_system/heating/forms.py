@@ -6,4 +6,5 @@ class ContainerForm(forms.ModelForm):
     class Meta:
         model = Container
         fields = ['volume', 'initial_temperature',
-                  'target_temperature', 'efficiency', 'power']
+                  #   'target_temperature', 'efficiency', 'power']
+                  'target_temperature', 'efficiency']
