@@ -1,0 +1,221 @@
+body {
+    background-image: url('../image/Fon_main.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    height: 100%;
+    font-family: 'Nunito', sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.logo img {
+    margin-right: 10px;
+    max-width: 100%;
+    /* Добавленный стиль для адаптивности изображения */
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+    margin: 0;
+    padding: 0;
+}
+
+nav ul li {
+    margin-right: 20px;
+}
+
+nav a {
+    text-decoration: none;
+    color: #fff;
+    /* font-weight: 1; */
+}
+
+main {
+    padding: 20px;
+}
+
+#latest-news {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    color: #fff;
+}
+
+.news-container {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.news-box {
+    width: 200px;
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin: 10px;
+}
+
+#container-form {
+    display: flex;
+    flex-direction: column;
+}
+
+#container-form>div {
+    margin-bottom: 10px;
+}
+
+input[type="text"],
+input[type="number"] {
+    color: black;
+    /* Устанавливаем цвет текста */
+    width: auto;
+    /* Или задайте фиксированную ширину, например, width: 300px; */
+    max-width: 100%;
+    /* Чтобы инпут не выходил за границы родительского элемента */
+}
+
+/* button#calculate-btn { */
+button {
+    background: rgba(255, 255, 255, 0.5);
+    /* Белый фон с небольшой прозрачностью */
+    border: none;
+    padding: 10px 20px;
+    font-size: 1em;
+    cursor: pointer;
+    backdrop-filter: blur(10px);
+    /* Эффект размытия для фона */
+    -webkit-backdrop-filter: blur(10px);
+    /* Для поддержки в Safari */
+    border-radius: 5px;
+    /* Скругление углов */
+    color: black;
+    /* Цвет текста */
+}
+
+button:hover {
+    background: rgba(255, 255, 255, 0.7);
+    /* Более непрозрачный фон при наведении */
+}
+
+/* 
+.direction {
+    margin-bottom: 20px;
+} */
+
+
+/* body {
+    background-color: rgb(29, 29, 29);
+} */
+
+/* body {
+    background-image: url('../image/Fon_main.png');
+    background-size: cover;
+}
+
+.navigate {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 300px;
+    /* Задайте высоту по вашему усмотрению /
+    background-color: rgba(240, 240, 240, 0);
+    /* Здесь 0.8 - это прозрачность (от 0 до 1) /
+    /* Задайте цвет фона по вашему усмотрению /
+    font-family: 'Kantumruy Pro', sans-serif;
+}
+
+.navigate ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+}
+
+.navigate li {
+    margin-right: 20px;
+    /* Расстояние между элементами списка, можно изменить /
+    padding: 10px;
+    /* Поля вокруг текста элемента списка, можно изменить /
+    color: aliceblue;
+    font-size: 48px;
+    /* Замените 18px на ваш желаемый размер шрифта /
+}
+
+.navigate a {
+    text-decoration: none;
+    color: #333;
+    /* Цвет ссылок, можно изменить /
+} */
+
+/*
+aside {
+    float: left;
+    background-color: rgb(2, 7, 57);
+    width: 30%;
+    padding: 2.5%;
+    height: 100vh;
+    color: white;
+    border-right: 5px solid darkblue
+}
+
+aside img {
+    width: 80px;
+    float: left;
+}
+
+aside .logo {
+    font-size: 40px;
+    margin-left: 10px;
+    font-weight: bold;
+    position: relative;
+    top: -20px;
+}
+
+aside h3 {
+    margin-top: 50px;
+    font-size: 28px;
+}
+
+aside ul {
+    list-style: none;
+}
+
+aside ul li {
+    color: white;
+    display: block;
+    margin-top: 20px;
+    transition: transform .6s ease;
+}
+
+aside ul li:hover,
+aside ul a:hover {
+    color: rgb(107, 80, 11);
+    text-decoration: none;
+    transform: scale(1.1);
+}
+
+main .features {
+    float: left;
+    color: white;
+    margin-top: 100px;
+    text-align: center;
+    width: 35%;
+}
+
+main .features h1 {
+    font-size: 50px;
+}
+
+main .features p {
+    max-width: 400px;
+    margin: 20px auto;
+}
+*/

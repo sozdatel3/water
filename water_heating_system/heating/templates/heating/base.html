@@ -1,0 +1,32 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title> {% block title %} {% endblock %}</title>
+    <!-- <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css"> -->
+    <script src="https://kit.fontawesome.com/b0d274ef30.js" crossorigin="anonymous"></script>
+    <script src="{% static 'heating/js/main.js' %}"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="{% static 'heating/css/main.css' %}">
+    <!-- ШРИФТЫ -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- Убрать в проде  -->
+    <link rel="stylesheet" href="{% static 'heating/css/main.css' %}?v={{ random_string }}">
+    <!-- Убрать в проде  -->
+</head>
+
+<body class="text-white">
+
+    {% include 'heating/components/header.html' %}
+    <main class="mt-12">
+        <div id="content">{% block content %}{% endblock %}</div>
+    </main>
+    {% include 'heating/components/footer.html' %}
+</body>
+
