@@ -1,0 +1,203 @@
+{% extends "heating/base.html" %}
+
+{% block content %}
+<head>
+<title>Помещение</title>
+    <style>
+        .room {
+            width: 800px; /* Пропорциональное отображение ширины 2м */
+            height: 400px; /* Пропорциональное отображение длины 1м */
+            border: 40px solid black; /* Толщина стен */
+            position: relative;
+            margin: 20px auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .temperature {
+            position: absolute;
+            font-size: 20px;
+        }
+        .dimension {
+            position: absolute;
+            color: #000;
+            font-size: 56px;
+        }
+        .width-dimension {
+            top: -120px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+        }
+        .height-dimension {
+            top: 80;
+            left: -120px;
+            transform: rotate(-90deg);
+            transform-origin: left top;
+        }
+        .dimension-line {
+            position: absolute;
+            border-top: 1px solid #000;
+        }
+        .width-line {
+            top: -80px;
+            width: 220px; /* Ширина + толщина стен */
+            left: -40px;
+        }
+        .height-line {
+            top: -40px;
+            height: 120px; /* Высота + толщина стен */
+            left: -120px;
+        }
+        .external-temp {
+            margin-top: 10px;
+            font-size: 20px;
+        }
+        #temperature-graph {
+            width: 100%;
+            height: 400px;
+        }
+    </style>
+</head>
+<body>
+<div class="room">
+    <div class="temperature">Температура: {{ room.temperature }}°C</div>
+    <div class="dimension width-dimension">2м</div>
+    <div class="dimension height-dimension">1м</div>
+    <!-- <div class="dimension-line width-line"></div> -->
+    <div class="dimension-line height-line"></div>
+    <!-- <div class="dimension-line height-line" style="transform: rotate(-90deg); transform-origin: left top;"></div> -->
+</div>
+<div id="external-temperature" class="external-temp">Внешняя температура в Москве: </div>
+<div id ="temp-into" class = "tempinto"></div>
+ <!-- Элемент для отображения графика -->
+ <div id="temperature-graph"></div>
+</body>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+<script>
+
+    function getTemperature() {
+    var apiKey = 'e2e6375d2129535d6cc7a57b7c4d23c3';
+    var url = `http://api.openweathermap.org/data/2.5/weather?q=Moscow,ru&appid=${apiKey}&units=metric`;
+    
+    // Возвращаем Promise
+    return new Promise((resolve, reject) => {
+        $.getJSON(url, function(data) {
+            if (data && data.main && data.main.temp) {
+                resolve(data.main.temp);
+            } else {
+                reject("Temperature data is not available");
+            }
+        }).fail(function() {
+            reject("Failed to load temperature data");
+        });
+    });
+    }
+
+    async function updateTemperature() {
+    try {
+        console.log("ready")
+        var temperature = await getTemperature(); // ожидаем получения температуры
+        
+        $('#external-temperature').text('Внешняя температура в Москве: ' + temperature.toFixed(1) + '°C');
+    } catch (error) {
+        console.error("An error occurred:", error);
+        // Обработка ошибки, если API не вернул температуру
+    }
+}
+
+    // function updateTemperature() {
+    //     var apiKey = 'e2e6375d2129535d6cc7a57b7c4d23c3';
+    //     var url = `http://api.openweathermap.org/data/2.5/weather?q=Moscow,ru&appid=${apiKey}&units=metric`;
+    //     var temperature = 0
+    //     $.getJSON(url, function(data) {
+    //         temperature = data.main.temp;
+    //         // console.log("in", temperature)
+    //         $('#external-temperature').text('Внешняя температура в Москве: ' + temperature.toFixed(1) + '°C');
+    //     });
+    //     // console.log("out", $('#external-temperature').text())
+    //     // parseFloat(
+    //         return temperature
+    //     }
+        
+        $(document).ready(async function() {
+            // plotTemperatureCurve();
+            temp = await getTemperature();
+            plotTemperatureCurve(25, temp, 0.1);
+            updateTemperature()
+            setInterval(async () => {await updateTemperature()}, 600000);
+            // setInterval(plotTemperatureCurve(25,await getTemperature(), 0.1), 600000);
+            setInterval(async () => {
+    plotTemperatureCurve(25, await getTemperature(), 0.1);
+}, 600000);
+            var temp_into = calc_temp_into(0.028, 0.1, temp, 25);
+            $('#temp-into').text('Теплопроводность стенки: ' + temp_into.toFixed(2) + '');
+        });
+        </script>
+
+<script>
+
+    function getTemperatureFromElement() {
+        var tempText = $('#external-temperature').text();
+        
+        var tempValue = tempText.replace(/[^\d.-]/g, '');
+
+        var tempNumber = parseFloat(tempValue);
+
+        // console.log(tempNumber);
+    return tempNumber;
+    }
+
+    function calc_temp_into(lambda, width, t1, t2) {
+        return lambda/width * (t1-t2);
+    }
+    function delta_math(t1, t2) {
+        if (t1 < t2) {
+            return t2 - t1
+        } else {
+            return t1 - t2
+        }
+    }
+
+    function plotTemperatureCurve(t1, t2, delta) {
+        // Генерация значений x от 0 до толщины стенки
+        var xValues = [];
+        var yValues = [];
+        // a = $('#external-temperature').text()
+        // console.log(getTemperatureFromElement())
+        for (var x = 0; x <= delta; x += delta / 100) {
+            xValues.push(x);
+            // console.log(t1, t2, delta_math(t1,t2))
+            var tx = t1 - (delta_math(t1, t2)) / delta * x;
+            yValues.push(tx);
+        }
+        // console.log(yValues)
+        var trace = {
+            x: xValues,
+            y: yValues,
+            type: 'scatter',
+            mode: 'lines+markers',
+            marker: { size: 4 }
+        };
+        
+        var data = [trace];
+        
+        var layout = {
+            title: 'Температурная кривая в стенке',
+            xaxis: {
+                title: 'Расстояние (м)'
+            },
+            yaxis: {
+                title: 'Температура (°C)'
+            }
+        };
+
+        Plotly.newPlot('temperature-graph', data, layout);
+    }
+
+</script>
+
+{% endblock %}

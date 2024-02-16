@@ -18,43 +18,11 @@
 
     </div>
 
-    <!-- <button type="button" id="calculate-btn">Посчитать</button> -->
   </form>
 
   <div id="results">
-    <!-- <p>Потраченное время: <span id="time-spent">-</span> сек</p> -->
     <p>Потрачено энергии: <span id="energy-spent">-</span> кВт·ч</p>
   </div>
-
-  <!-- <script>
-    document.getElementById('calculate-btn').addEventListener('click', function() {
-      const data = {
-        'volume': document.getElementById('id_volume').value,
-        'initial_temperature': document.getElementById('id_initial_temperature').value,
-        'target_temperature': document.getElementById('id_target_temperature').value,
-        'efficiency': document.getElementById('id_efficiency').value,
-        // 'power': document.getElementById('id_power').value,
-        'csrfmiddlewaretoken': '{{ csrf_token }}'
-      };
-
-      fetch('{% url "calculate_simulation" %}', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-CSRFToken': data.csrfmiddlewaretoken
-        },
-        body: JSON.stringify(data)
-      })
-      .then(response => response.json())
-      .then(data => {
-        // document.getElementById('time-spent').textContent = data.time_spent;
-        document.getElementById('energy-spent').textContent = data.energy_spent;
-      })
-      .catch((error) => {
-        console.error('Error:', error);
-      });
-    });
-  </script> -->
 
    <script>
     const inputs = document.querySelectorAll('#container-form input');
@@ -68,7 +36,6 @@
         'initial_temperature': document.getElementById('id_initial_temperature').value,
         'target_temperature': document.getElementById('id_target_temperature').value,
         'efficiency': document.getElementById('id_efficiency').value,
-        // 'power': document.getElementById('id_power').value,
         'csrfmiddlewaretoken': '{{ csrf_token }}'
       };
 

@@ -4,30 +4,25 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render, redirect
 from .forms import ContainerForm
-from .models import Container
+from .models import Container, Room
 import json
 
-# def simulate_heating(request):
-#     if request.method == 'POST':
-#         form = ContainerForm(request.POST)
-#         if form.is_valid():
 
-#             # Здесь будет логика симуляции и расчета потраченной энергии и времени
-#             container = form.save(commit=False)
-
-#             # Предположим, что симуляция происходит мгновенно и мы просто рассчитаем энергию и время
-#             energy, time = simulate(container.volume, container.initial_temperature,
-#                                     container.target_temperature, container.efficiency)
-
-#             # Сохранение результатов для передачи в шаблон
-#             results = {
-#                 'energy': energy,
-#                 'time': time,
-#             }
-#             return render(request, 'heating/results.html', {'form': form, 'results': results})
-#     else:
-#         form = ContainerForm()
-#     return render(request, 'heating/simulation_form.html', {'form': form})
+def room_view(request):
+    try:
+        room = Room.objects.first()  # Получаем первое помещение из базы данных
+    except:
+        room = None
+    # Проверяем, существует ли помещение
+    if not room:
+        # Если помещение не существует, создаем новое с заданными параметрами
+        room = Room(length=2.0, width=1.0,
+                    wall_thickness=0.1, temperature=25.0)
+        # room.save()  # Сохраняем новое помещение в базу данных
+    context = {
+        'room': room
+    }
+    return render(request, 'heating/room.html', context)
 
 
 def main_page(request):
@@ -37,39 +32,38 @@ def main_page(request):
 
 @csrf_exempt
 def calculate_simulation(request):
-    if request.method == 'POST':
-        # Получаем данные из запроса
-        data = json.loads(request.body)
-        volume = data.get('volume')
-        initial_temperature = data.get('initial_temperature')
-        target_temperature = data.get('target_temperature')
-        efficiency = data.get('efficiency')
-        power = data.get("power")
-        print(volume, initial_temperature,
-              target_temperature, efficiency, power)
-        # Преобразуем строки в числа
-        volume = float(volume) if volume else 0
-        initial_temperature = float(
-            initial_temperature) if initial_temperature else 0
-        target_temperature = float(
-            target_temperature) if target_temperature else 0
-        efficiency = float(efficiency) if efficiency else 100
+    if request.method != 'POST':
+        # Если это не POST запрос, возвращаем пустой JSON объект
+        return JsonResponse({})
+    # Получаем данные из запроса
+    data = json.loads(request.body)
+    volume = data.get('volume')
+    initial_temperature = data.get('initial_temperature')
+    target_temperature = data.get('target_temperature')
+    efficiency = data.get('efficiency')
+    power = data.get("power")
+    print(volume, initial_temperature,
+          target_temperature, efficiency, power)
+    # Преобразуем строки в числа
+    volume = float(volume) if volume else 0
+    initial_temperature = float(
+        initial_temperature) if initial_temperature else 0
+    target_temperature = float(
+        target_temperature) if target_temperature else 0
+    efficiency = float(efficiency) if efficiency else 100
 
-        power = float(efficiency) if power else 100
+    power = float(efficiency) if power else 100
 
-        # Выполняем симуляцию
-        time_spent, energy_spent = simulate_heating_process(
-            volume, initial_temperature, target_temperature, efficiency, power
-        )
+    # Выполняем симуляцию
+    time_spent, energy_spent = simulate_heating_process(
+        volume, initial_temperature, target_temperature, efficiency, power
+    )
 
-        # Возвращаем результаты
-        return JsonResponse({
-            'time_spent': time_spent,
-            'energy_spent': energy_spent
-        })
-
-    # Если это не POST запрос, возвращаем пустой JSON объект
-    return JsonResponse({})
+    # Возвращаем результаты
+    return JsonResponse({
+        'time_spent': time_spent,
+        'energy_spent': energy_spent
+    })
 
 
 def simulate_heating_process(volume, initial_temp, target_temp, efficiency, power):
