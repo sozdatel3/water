@@ -109,32 +109,20 @@
     }
 }
 
-    // function updateTemperature() {
-    //     var apiKey = 'e2e6375d2129535d6cc7a57b7c4d23c3';
-    //     var url = `http://api.openweathermap.org/data/2.5/weather?q=Moscow,ru&appid=${apiKey}&units=metric`;
-    //     var temperature = 0
-    //     $.getJSON(url, function(data) {
-    //         temperature = data.main.temp;
-    //         // console.log("in", temperature)
-    //         $('#external-temperature').text('Внешняя температура в Москве: ' + temperature.toFixed(1) + '°C');
-    //     });
-    //     // console.log("out", $('#external-temperature').text())
-    //     // parseFloat(
-    //         return temperature
-    //     }
         
         $(document).ready(async function() {
-            // plotTemperatureCurve();
+
             temp = await getTemperature();
             plotTemperatureCurve(25, temp, 0.1);
             updateTemperature()
             setInterval(async () => {await updateTemperature()}, 600000);
-            // setInterval(plotTemperatureCurve(25,await getTemperature(), 0.1), 600000);
+
             setInterval(async () => {
-    plotTemperatureCurve(25, await getTemperature(), 0.1);
-}, 600000);
+            plotTemperatureCurve(25, await getTemperature(), 0.1);
+            }, 600000);
+            // console.log(temp)
             var temp_into = calc_temp_into(0.028, 0.1, temp, 25);
-            $('#temp-into').text('Теплопроводность стенки: ' + temp_into.toFixed(2) + '');
+            $('#temp-into').text('Теплопроводность стенки: ' + temp_into.toFixed(2) + '\nСчитается по формуле; l/w * (t1-t2)\nl - коэффицент теплопроводимости\nw - ширина стенки\nt1 - t2 - разница температур');
         });
         </script>
 
@@ -150,10 +138,6 @@
         // console.log(tempNumber);
     return tempNumber;
     }
-
-    function calc_temp_into(lambda, width, t1, t2) {
-        return lambda/width * (t1-t2);
-    }
     function delta_math(t1, t2) {
         if (t1 < t2) {
             return t2 - t1
@@ -161,20 +145,20 @@
             return t1 - t2
         }
     }
+    
+    function calc_temp_into(lambda, width, t1, t2) {
+        return lambda/width * delta_math(t1, t2);
+    }
 
     function plotTemperatureCurve(t1, t2, delta) {
         // Генерация значений x от 0 до толщины стенки
         var xValues = [];
         var yValues = [];
-        // a = $('#external-temperature').text()
-        // console.log(getTemperatureFromElement())
         for (var x = 0; x <= delta; x += delta / 100) {
             xValues.push(x);
-            // console.log(t1, t2, delta_math(t1,t2))
             var tx = t1 - (delta_math(t1, t2)) / delta * x;
             yValues.push(tx);
         }
-        // console.log(yValues)
         var trace = {
             x: xValues,
             y: yValues,
