@@ -149,34 +149,19 @@
         <input type="number" id="height" name="height" step="0.01" required>
     </div>
     <div class="form-group">
-        <label for="room_size">Длинна (мм)</label>
+        <label for="room_size">Длина (мм)</label>
         <input type="number" id="room_size" name="room_size" step="0.01" required>
     </div>
     <div class="form-group">
         <label for="initial-temp">Начальная температура (°C):</label>
         <input type="number" id="initial-temp" name="initial-temp" step="0.01" required>
     </div>
-      <!-- Поле для отображения периметра комнаты -->
-      <div class="form-group">
-          <label>Периметр стен (мм):</label>
-          <input type="text" id="perimeter" readonly>
-        </div>
-        <!-- Поле для отображения площади комнаты -->
-        <div class="form-group">
-            <label>Площадь стен (мм^2):</label>
-            <input type="text" id="square" readonly>
-    </div>
-    <!-- Поле для отображения объема комнаты -->
-    <div class="form-group">
-        <label>Объем внутреннего воздуха (мм^3):</label>
-        <input type="text" id="cube" readonly>
-    </div>
-    <div class="form-group">
+    <!-- <div class="form-group">
         <label for="time">Время измерения(мин)</label>
         <input type="number" id="time" name="time" step="0.01">
-    </div>
+    </div> -->
     <div class="form-group">
-    <label for="layers-count">Количество слоев стены:</label>
+        <label for="layers-count">Количество слоев стены:</label>
         <select id="layers-count" name="layers-count" style="color: rgb(0, 0, 0)">
             <option value="">Выберите количество слоев</option>
             <option value="1">1</option>
@@ -188,6 +173,59 @@
         </select>
     </div>
     <div id="layers-inputs-container"></div>
+    <!-- Поле для отображения периметра комнаты -->
+    <div class="form-group">
+        <label>Периметр стен (м):</label>
+        <input type="text" id="perimeter" readonly>
+    </div>
+    <!-- Поле для отображения площади комнаты -->
+    <div class="form-group">
+        <label>Площадь стен (м^2):</label>
+        <input type="text" id="square" readonly>
+    </div>
+    <!-- Поле для отображения объема комнаты -->
+    <div class="form-group">
+        <label>Объем внутреннего воздуха (м^3):</label>
+        <input type="text" id="cube" readonly>
+    </div>
+    <!-- Поле для отображения площади стенки -->
+    <div class="form-group">
+        <label>Площадь стенки A(м^2):</label>
+        <input type="text" id="square_a" readonly>
+    </div>
+    <!-- Поле для отображения площади стенки -->
+    <div class="form-group">
+        <label>Площадь стенки B(м^2):</label>
+        <input type="text" id="square_b" readonly>
+    </div>
+    <!-- Поле для отображения площади пола -->
+    <div class="form-group">
+        <label>Площадь пола/потолка (м^2):</label>
+        <input type="text" id="square_floor" readonly>
+    </div>
+    
+    <!-- Поле для отображения площади стыков -->
+    <div class="form-group">
+        <label>Площадь стыков (м^2):</label>
+        <input type="text" id="square_drill" readonly>
+    </div>
+
+    <!-- цена -->
+    <div class="form-group">
+        <label>Цена материала (rub/м^2):</label>
+        <input type="text" id="price_in">
+    </div>
+
+    <div class="form-group">
+        <label>Итоговая стоимость материала (rub):</label>
+        <input type="text" id="price_out" readonly>
+    </div>
+    <!-- цена -->
+    <!-- <div class="form-group"> -->
+        <!-- <label>Использованные формулы: (rub):</label> -->
+        <div type="text" id="formula" readonly></div>
+    <!-- </div> -->
+
     <!-- <div class="form-group">
         <label for="wall-thickness">Толщина стены (мм):</label>
         <input type="number" id="wall-thickness" name="wall-thickness" step="0.01" required>
@@ -397,25 +435,49 @@ async function updateTemperature() {
     }
 }
 
-        // Функция для расчета периметра
+        // Функция для расчета
         function calculatePerimeter() {
-            var width = parseFloat(document.getElementById('width').value);
-            var height = parseFloat(document.getElementById('height').value);
-            var room_size = parseFloat(document.getElementById('room_size').value);
+            var width = parseFloat(document.getElementById('width').value) / 1000;
+            var height = parseFloat(document.getElementById('height').value) / 1000;
+            var room_size = parseFloat(document.getElementById('room_size').value) / 1000;
+            
+            var price_for_meter = parseFloat(document.getElementById('price_in').value)
+            
+                // Обновляем описание формулы
+            var formulaDescription = "Периметр = (ширина + длина + высота) * 4\n\n" +
+            "Площадь стен = (ширина * высота * 2) + (длина * высота * 2) + (ширина * размер комнаты * 2) \n\n" +
+            "Объем комнаты = ширина * высота * длина.\n\n" +
+            "Площадь стены a = высота * длина.\n\n" +
+            "Площадь стены b = ширина * высота.\n\n" +
+            "Площадь пола/потолка = ширина * длина.\n\n" +
+            "Итоговая стоимость материала = цена за м^2 * площадь стен.\n\n";
+            document.getElementById('formula').innerText = formulaDescription;
 
             // Проверяем, что все значения введены
             if (!isNaN(width) && !isNaN(height) && !isNaN(room_size)) {
                 var perimeter = (width + room_size+ height) * 4;
                 var square = (width * height * 2) + room_size * height * 2 + width * room_size * 2
                 var cube = (width * height * room_size)
+                var square_a = height * room_size
+                var square_b = width * height
+                var square_floor = room_size * width
                 document.getElementById('perimeter').value = perimeter;
                 document.getElementById('square').value = square;
                 document.getElementById('cube').value = cube;
-
+                document.getElementById('square_a').value = square_a;
+                document.getElementById('square_b').value = square_b;
+                document.getElementById('square_floor').value = square_floor;
+                if (!isNaN(price_for_meter)) {
+                    var total_price = square * price_for_meter
+                    document.getElementById('price_out').value = total_price;
+                }
             } else {
                 document.getElementById('perimeter').value = 'Введите все размеры';
                 document.getElementById('square').value = 'Введите все размеры';
                 document.getElementById('cube').value = 'Введите все размеры';
+                document.getElementById('square_a').value = 'Введите все размеры';
+                document.getElementById('square_b').value = 'Введите все размеры';
+                document.getElementById('square_floor').value = 'Введите все размеры';
             }
         }
 
@@ -423,6 +485,7 @@ async function updateTemperature() {
     document.getElementById('width').addEventListener('input', calculatePerimeter);
     document.getElementById('height').addEventListener('input', calculatePerimeter);
     document.getElementById('room_size').addEventListener('input', calculatePerimeter);
+    document.getElementById('price_in').addEventListener('input', calculatePerimeter);
 
 
     document.getElementById('layers-count').addEventListener('change', function() {
@@ -440,20 +503,23 @@ async function updateTemperature() {
                     <input type="number" id="wall-${i}-thickness" name="wall-${i}-thickness" step="0.01" required>
                 </div>
                 <div class="form-group">
-                    <label for="wall-${i}-material">Материал слоя ${i}:</label>
+                    <label for="wall-${i}-material">Категория слоя ${i}:</label>
                     <select id="wall-${i}-material" name="wall-${i}-material" style="color: rgb(0, 0, 0)">
-                <option value="brick" data-lambda="0.7">Кирпич</option>
-                <option value="concrete" data-lambda="1.1">Бетон</option>
-                <option value="wood" data-lambda="0.15">Дерево</option>
-                <option value="foam_concrete" data-lambda="0.3">Пенобетон</option>
-                <option value="aerated_concrete" data-lambda="0.21">Газобетон</option>
-                <option value="abs" data-lambda="0.17">АБС пластик</option>
-                <option value="abs" data-lambda="221">Алюминий (ГОСТ 22233-83)</option>
-                <option value="abs" data-lambda="0.22">Блок газобетонный</option>
-                <option value="abs" data-lambda="75">Железо</option>
-                <option value="abs" data-lambda="0.15">Пенобетон</option>
-                <option value="abs" data-lambda="0.438">Дерево</option>
-                <option value="insulation" data-lambda="0.04">Утеплитель</option>
+                <option value="brick" data-lambda="0.7">Утеплитель</option>
+                <option value="concrete" data-lambda="1.1">Металл</option>
+                <option value="wood" data-lambda="0.15">Пластик</option>
+                <option value="wood" data-lambda="0.15">Газ</option>
+                <option value="wood" data-lambda="0.15">Вакум</option>
+                </select>
+                </div>
+                <div class="form-group">
+                    <label for="wall-${i}-material1">Материал слоя ${i}:</label>
+                    <select id="wall-${i}-material1" name="wall-${i}-material1" style="color: rgb(0, 0, 0)">
+                <option value="brick" data-lambda="0.7"></option>
+                <option value="concrete" data-lambda="1.1"></option>
+                <option value="wood" data-lambda="0.15"></option>
+                <option value="wood" data-lambda="0.15"></option>
+                <option value="wood" data-lambda="0.15"></option>
                 </select>
                 </div>
                 `;
