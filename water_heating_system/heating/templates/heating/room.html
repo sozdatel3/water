@@ -34,7 +34,7 @@
 .room::after {
     content: attr(data-wall-thickness); /* Пример толщины стен */
     top: 50%; /* Позиционирование относительно высоты элемента */
-    left: -80px; /* Позиционирование слева от элемента */
+    left: -90px; /* Позиционирование слева от элемента */
     transform: translateY(-50%) rotate(-90deg); /* Сдвиг для центрирования и поворот на 90 градусов */
 }
         .temperature {
@@ -110,6 +110,13 @@
     .form-group button {
         margin-top: 20px; /* Отступ сверху для кнопки */
     }
+    .form-group input[readonly] {
+            background-color: #f3f3f3; /* Светло-серый фон */
+            color: #686868; /* Темно-серый текст */
+            border: 1px solid #dcdcdc; /* Граница в стиле */
+            cursor: not-allowed; /* Курсор в виде знака "запрет" */
+            opacity: 0.7; /* Немного прозрачности */
+        }
 
     </style>
 </head>
@@ -118,27 +125,37 @@
 
 <form id="room-params" class="room-params">
     <div class="form-group">
-        <label for="width">Ширина комнаты (мм):</label>
+        <label for="width">Ширина (мм):</label>
         <input type="number" id="width" name="width" step="0.01" required>
     </div>
     <div class="form-group">
-        <label for="height">Высота комнаты (мм):</label>
+        <label for="height">Высота (мм):</label>
         <input type="number" id="height" name="height" step="0.01" required>
+    </div>
+    <div class="form-group">
+        <label for="room_size">Длинна (мм)</label>
+        <input type="number" id="room_size" name="room_size" step="0.01" required>
     </div>
     <div class="form-group">
         <label for="initial-temp">Начальная температура (°C):</label>
         <input type="number" id="initial-temp" name="initial-temp" step="0.01" required>
+    </div>
+      <!-- Поле для отображения периметра комнаты -->
+    <div class="form-group">
+        <label>Периметр стен (мм):</label>
+        <input type="text" id="perimeter" readonly>
+    </div>
+      <!-- Поле для отображения периметра комнаты -->
+    <div class="form-group">
+        <label>Площадь стен (мм^2):</label>
+        <input type="text" id="square" readonly>
     </div>
     <div class="form-group">
         <label for="wall-thickness">Толщина стены (мм):</label>
         <input type="number" id="wall-thickness" name="wall-thickness" step="0.01" required>
     </div>
     <div class="form-group">
-        <label for="room_size">Длинна комнаты (мм)</label>
-        <input type="number" id="room_size" name="room_size" step="0.01" required>
-    </div>
-    <div class="form-group">
-        <label for="time">За какое время смотрим изменение(мин)</label>
+        <label for="time">Время изменения(мин)</label>
         <input type="number" id="time" name="time" step="0.01">
     </div>
     <div class="form-group">
@@ -295,19 +312,19 @@ function calculateTemperatureChange(Q, m, cp) {
 
 function updateResistor(d, k) {
     var temp_into = calculateThermalResistance(d,k);
-    $('#temp-resistor').html('Tепловое сопротивление стены: ' + temp_into.toFixed(2) + '<br>Считается по формуле: d/k <br> d: Толщина стены (в метрах). <br>k: Коэффициент теплопроводности материала стены (в Вт/(м·°C)).<br><br>');
+    $('#temp-resistor').html('Tепловое сопротивление стены: ' + temp_into.toFixed(6) + '<br>Считается по формуле: d/k <br> d: Толщина стены (в метрах). <br>k: Коэффициент теплопроводности материала стены (в Вт/(м·°C)).<br><br>');
     return temp_into
 }
 
 function updateHeat(deltaT, A, t, R) {
     var temp_into = calculateHeatLoss(deltaT, A, t, R);
-    $('#temp-q').html('Kоличество тепла, переданного через стены (в Джоулях): ' + temp_into.toFixed(2) + '<br>Считается по формуле: (deltaT * A * t) / R <br> deltaT: Разность температур снаружи и внутри (в градусах Цельсия)<br>A: Площадь стены или общая площадь стенок (в квадратных метрах).<br>t: Время в секундах<br>R: Тепловое сопротивление стены или стенок (в м²·°C/W)<br><br>');
+    $('#temp-q').html('Kоличество тепла, переданного через стены (в Джоулях): ' + temp_into.toFixed(6) + '<br>Считается по формуле: (deltaT * A * t) / R <br> deltaT: Разность температур снаружи и внутри (в градусах Цельсия)<br>A: Площадь стены или общая площадь стенок (в квадратных метрах).<br>t: Время в секундах<br>R: Тепловое сопротивление стены или стенок (в м²·°C/W)<br><br>');
     return temp_into
 }
 
 function updateTemperatureChange(Q, m, cp) {
     var temp_into = calculateTemperatureChange(Q, m, cp);
-    $('#temp-t').html('Изменение температуры в помещении на основе потерь тепла: ' + temp_into.toFixed(2) + '<br>Считается по формуле: Q / (m * cp) <br> Q: Количество тепла, переданного через стену (в Джоулях).<br>m: Масса воздуха в помещении (в кг).<br>cp: Теплоемкость воздуха (в Дж/(кг·°C)).<br><br>');
+    $('#temp-t').html('Изменение температуры в помещении на основе потерь тепла: ' + temp_into.toFixed(6) + '<br>Считается по формуле: Q / (m * cp) <br> Q: Количество тепла, переданного через стену (в Джоулях).<br>m: Масса воздуха в помещении (в кг).<br>cp: Теплоемкость воздуха (в Дж/(кг·°C)).<br><br>');
     return temp_into
 }
 
@@ -342,6 +359,29 @@ async function updateTemperature() {
     }
 }
 
+        // Функция для расчета периметра
+        function calculatePerimeter() {
+            var width = parseFloat(document.getElementById('width').value);
+            var height = parseFloat(document.getElementById('height').value);
+            var room_size = parseFloat(document.getElementById('room_size').value);
+
+            // Проверяем, что все значения введены
+            if (!isNaN(width) && !isNaN(height) && !isNaN(room_size)) {
+                var perimeter = (width + room_size+ height) * 4;
+                var square = (width * height * 2) + room_size * height * 2 + width * room_size * 2
+                document.getElementById('perimeter').value = perimeter;
+                document.getElementById('square').value = square;
+
+            } else {
+                document.getElementById('perimeter').value = 'Введите все размеры';
+                document.getElementById('square').value = 'Введите все размеры';
+            }
+        }
+
+    // Добавляем обработчики событий для полей ввода
+    document.getElementById('width').addEventListener('input', calculatePerimeter);
+    document.getElementById('height').addEventListener('input', calculatePerimeter);
+    document.getElementById('room_size').addEventListener('input', calculatePerimeter);
 
 $(document).ready(async function() {
     updateTemperature()
@@ -365,9 +405,9 @@ $(document).ready(async function() {
         }
         var lambda = material.data('lambda'); // Получаем значение теплопроводности выбранного материала
         
-        $('.room').attr('data-wall-thickness', 'Толщина стены: ' + wallThickness + 'м');
-        $('.width-dimension').text(width + 'м')
-        $('.height-dimension').text(height + 'м')
+        $('.room').attr('data-wall-thickness', 'Толщина стены: ' + (wallThickness * 1000) + 'мм');
+        $('.width-dimension').text(width * 1000+ 'мм')
+        $('.height-dimension').text(height * 1000+ 'мм')
         $('.temperature').text('Температура:' + initialTemp + '°C')
         if (width > height) {
             $('.room').css('width', '599px');
@@ -403,7 +443,7 @@ $(document).ready(async function() {
         }, 600000);
         // console.log(temp)
         var temp_into = calc_temp_into(lambda, 0.1, temp, initialTemp);
-        $('#temp-into').html('Теплопроводность стенки: ' + temp_into.toFixed(2) + '<br>Считается по формуле: l/w * (t1-t2)<br>l - коэффициент теплопроводимости<br>w - ширина стенки<br>t1 - t2 - разница температур');
+        $('#temp-into').html('Теплопроводность стенки: ' + temp_into.toFixed(6) + '<br>Считается по формуле: l/w * (t1-t2)<br>l - коэффициент теплопроводимости<br>w - ширина стенки<br>t1 - t2 - разница температур');
 
         resist = updateResistor(wallThickness, lambda)
         // console.log(delta_math(temp, initialTemp), calc_square(height, width, room_size, time * 60, resist));
