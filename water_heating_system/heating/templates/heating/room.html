@@ -259,16 +259,16 @@
             </div>
             <div id="layers-inputs-container__floor"></div>
         </div>
-        <div class="results-board" id="results_b">
+        <div class="results-board" id="results__floor">
             <div class="result">
                 <label>Результаты вычислений:</label>
                 <div class="form-group">
                     <label>Площадь  (м^2):</label>
-                    <input type="text" id="square_floor" readonly>
+                    <input type="text" id="square__floor" readonly>
                 </div>
                 <div class="form-group">
                     <label>Cтоимость материала (rub):</label>
-                    <input type="text" id="price_out_floor" readonly>
+                    <input type="text" id="price_out__floor" readonly>
                 </div>
             </div>
         </div>
@@ -298,7 +298,7 @@
             </div>
             <div id="layers-inputs-container_top"></div>
         </div>
-        <div class="results-board" id="results_b">
+        <div class="results-board" id="results_top">
             <div class="result">
                 <label>Результаты вычислений:</label>
                 <div class="form-group">
@@ -608,12 +608,12 @@ async function updateTemperature() {
 }
 
         // Функция для расчета
-        function calculatePerimeter() {
-            var width = parseFloat(document.getElementById('width_a').value) / 1000;
-            var height = parseFloat(document.getElementById('height_a').value) / 1000;
-            var room_size = parseFloat(document.getElementById('room_size_a').value) / 1000;
+        function calculatePerimeter(name) {
+            var width = parseFloat(document.getElementById(`width${name}`).value) / 1000;
+            var height = parseFloat(document.getElementById(`height${name}`).value) / 1000;
+            // var room_size = parseFloat(document.getElementById(`room_size${name}`).value) / 1000;
             
-            var price_for_meter = parseFloat(document.getElementById('price_in').value)
+            // var price_for_meter = parseFloat(document.getElementById('price_in').value)
             
                 // Обновляем описание формулы
             var formulaDescription = "Периметр = (ширина + длина + высота) * 4\n\n" +
@@ -626,38 +626,49 @@ async function updateTemperature() {
             document.getElementById('formula').innerText = formulaDescription;
 
             // Проверяем, что все значения введены
-            if (!isNaN(width) && !isNaN(height) && !isNaN(room_size)) {
-                var perimeter = (width + room_size+ height) * 4;
+            // if (!isNaN(width) && !isNaN(height) && !isNaN(room_size)) {
+            if (!isNaN(width) && !isNaN(height)) {
+                // var perimeter = (width + room_size+ height) * 4;
+                var room_size = 0
+                var perimeter = (width + height) * 2;
                 var square = (width * height * 2) + room_size * height * 2 + width * room_size * 2
                 var cube = (width * height * room_size)
                 var square_a = height * room_size
                 var square_b = width * height
                 var square_floor = room_size * width
                 document.getElementById('perimeter').value = perimeter;
-                document.getElementById('square').value = square;
-                document.getElementById('cube').value = cube;
-                document.getElementById('square_a').value = square_a;
-                document.getElementById('square_b').value = square_b;
-                document.getElementById('square_floor').value = square_floor;
-                if (!isNaN(price_for_meter)) {
-                    var total_price = square * price_for_meter
-                    document.getElementById('price_out').value = total_price;
-                }
+                document.getElementById(`square${name}`).value = square;
+                // document.getElementById(`cube${name}`).value = cube;
+                // document.getElementById('square_a').value = square_a;
+                // document.getElementById('square_b').value = square_b;
+                // document.getElementById('square_floor').value = square_floor;
+                // if (!isNaN(price_for_meter)) {
+                    // var total_price = square * price_for_meter
+                    // document.getElementById(`price_out${name}`).value = total_price;
+                // }
             } else {
-                document.getElementById('perimeter').value = 'Введите все размеры';
-                document.getElementById('square').value = 'Введите все размеры';
+                // document.getElementById('perimeter').value = 'Введите все размеры';
+                document.getElementById(`square${name}`).value = 'Введите все размеры';
                 document.getElementById('cube').value = 'Введите все размеры';
-                document.getElementById('square_a').value = 'Введите все размеры';
-                document.getElementById('square_b').value = 'Введите все размеры';
-                document.getElementById('square_floor').value = 'Введите все размеры';
+                // document.getElementById('square_a').value = 'Введите все размеры';
+                // document.getElementById('square_b').value = 'Введите все размеры';
+                // document.getElementById('square_floor').value = 'Введите все размеры';
             }
         }
 
     // Добавляем обработчики событий для полей ввода
-    document.getElementById('width_a').addEventListener('input', calculatePerimeter);
-    document.getElementById('height_a').addEventListener('input', calculatePerimeter);
+    // document.getElementById('width_a').addEventListener('input', calculatePerimeter);
+    document.getElementById('width_a').addEventListener('input', (event) => calculatePerimeter('_a'));
+    document.getElementById('width_b').addEventListener('input', (event) => calculatePerimeter('_b'));
+    document.getElementById('width__floor').addEventListener('input', (event) => calculatePerimeter('__floor'));
+    document.getElementById('width_top').addEventListener('input', (event) => calculatePerimeter('_top'));
+    // document.getElementById('height_a').addEventListener('input', calculatePerimeter);
+    document.getElementById('height_a').addEventListener('input', (event) => calculatePerimeter('_a'));
+    document.getElementById('height_b').addEventListener('input', (event) => calculatePerimeter('_b'));
+    document.getElementById('height__floor').addEventListener('input', (event) => calculatePerimeter('__floor'));
+    document.getElementById('height_top').addEventListener('input', (event) => calculatePerimeter('_top'));
     // document.getElementById('room_size').addEventListener('input', calculatePerimeter);
-    document.getElementById('price_in').addEventListener('input', calculatePerimeter);
+    // document.getElementById('price_in').addEventListener('input', (event) => calculatePerimeter('_a'));
 
 
     function add_inputs(name, layersCount) {
@@ -794,6 +805,16 @@ $(document).ready(async function() {
     
 });
 
+function calculateInsulationRolls(wallLength, wallHeight, wallThickness, rollLength, rollHeight, rollThickness) {
+
+    const wallVolume = wallLength * wallHeight * wallThickness;
+    
+    const rollVolume = rollLength * rollHeight * rollThickness;
+    
+    const rollsNeeded = Math.ceil(wallVolume / rollVolume);
+    
+    return rollsNeeded;
+}
 </script>
 
 {% endblock %}
