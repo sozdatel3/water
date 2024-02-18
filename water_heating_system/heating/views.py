@@ -11,7 +11,7 @@ import json
 def room_view(request):
     try:
         room = Room.objects.first()  # Получаем первое помещение из базы данных
-    except:
+    except Exception:
         room = None
     # Проверяем, существует ли помещение
     if not room:

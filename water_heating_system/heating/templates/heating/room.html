@@ -1,154 +1,11 @@
 {% extends "heating/base.html" %}
-
 {% block content %}
+{% load static %}
 <head>
 <title>Помещение</title>
-    <style>
-        .room {
-            width: 800px; /* Пропорциональное отображение ширины 2м */
-            height: 400px; /* Пропорциональное отображение длины 1м */
-            border: 40px solid rgb(187, 140, 0); /* Толщина стен */
-            position: relative;
-            margin: 20px auto;
-            /* display: flex; */
-            display: none;
-            justify-content: center;
-            align-items: center;
-        }
-        .room::before,
-    .room::after {
-        position: absolute;
-    color: red; /* Цвет текста */
-    font-size: 16px; /* Размер шрифта */
-    z-index: 10; /* Убедитесь, что текст будет виден поверх других элементов */
-}
+<link rel="stylesheet" href="{% static 'heating/css/room.css' %}">
 
-/* Текст для верхней границы
-.room::before {
-    top: -60px; /* Позиционирование над элементом */
-    /* left: 50%; Центрирование текста относительно ширины элемента */
-    /* transform: translateX(-50%); Сдвиг для точного центрирования */
-/* } */ 
-.container_in_out {
-            display: grid;
-            grid-template-columns: 1fr 1fr; /* Создает два столбца с равной шириной */
-        }
-
-
-.room::after {
-    content: attr(data-wall-thickness); /* Пример толщины стен */
-    top: 50%; /* Позиционирование относительно высоты элемента */
-    left: -100px; /* Позиционирование слева от элемента */
-    transform: translateY(-50%) rotate(-90deg); /* Сдвиг для центрирования и поворот на 90 градусов */
-}
-        .temperature {
-            position: absolute;
-            font-size: 20px;
-        }
-        .dimension {
-            position: absolute;
-            color: #000;
-            font-size: 36px;
-        }
-        .width-dimension {
-            top: 0px;
-            left: 0;
-            width: 100%;
-            text-align: center;
-        }
-        .height-dimension {
-            top: 180px;
-            left: -10px;
-            transform: rotate(-90deg);
-            transform-origin: left top;
-        }
-        .dimension-line {
-            position: absolute;
-            border-top: 1px solid #000;
-        }
-        .width-line {
-            top: -80px;
-            width: 220px; /* Ширина + толщина стен */
-            left: -40px;
-        }
-        .height-line {
-            top: -40px;
-            height: 120px; /* Высота + толщина стен */
-            left: -120px;
-        }
-        .external-temp {
-            margin-top: 10px;
-            font-size: 20px;
-        }
-        #material {
-            color: black;
-        }
-        #temperature-graph {
-            width: 100%;
-            height: 400px;
-        }
-            /* Стили при наведении курсора */
-    button:hover {
-        background-color: #45a049; /* Немного темнее */
-        transform: scale(1.05); /* Немного увеличить */
-    }
-        .room-params {
-        display: flex;
-        flex-wrap: wrap;
-        max-width: 600px; /* Максимальная ширина формы */
-        margin: 0 auto; /* Центрирование формы */
-        }
-        
-    .form-board {
-        border: 2px solid #000; /* Черная рамка толщиной 2px */
-        padding: 10px; /* Отступы внутри рамки */
-        margin: 10px 0; /* Отступы снаружи рамки */
-    }
-    .form-group {
-        flex: 1 1 50%; /* Каждый блок займет половину ширины родителя */
-        min-width: 200px; /* Минимальная ширина блока, чтобы избежать слишком узких полей на маленьких экранах */
-        box-sizing: border-box;
-        padding: 10px; /* Отступы внутри блока для визуального разделения */
-    }
-    .form-group label {
-        color: rgb(255, 255, 255);
-        width: 100%; /* Ширина элементов относительно их родителя */
-        box-sizing: border-box;
-        
-    }
-    .results-board {
-    border: 2px solid #ccc;
-    padding: 10px;
-    margin: 10px 0;
-}
-
-    .form-group input {
-        color: rgb(0, 0, 0);
-        width: 100%; /* Ширина элементов относительно их родителя */
-        box-sizing: border-box;
-
-    }
-    .form-group select {
-        color: rgb(0, 0, 0);
-        /* background-color: rgb(0, 0, 0); */
-        width: 100%; /* Ширина элементов относительно их родителя */
-        box-sizing: border-box;
-    } 
-    /* .option {
-        background-color: rgb(0, 0, 0);
-        color: rgb(0, 0, 0);
-    } */
-    .form-group button {
-        margin-top: 20px; /* Отступ сверху для кнопки */
-    }
-    .form-group input[readonly] {
-            background-color: #f3f3f3; /* Светло-серый фон */
-            color: #686868; /* Темно-серый текст */
-            border: 1px solid #dcdcdc; /* Граница в стиле */
-            cursor: not-allowed; /* Курсор в виде знака "запрет" */
-            opacity: 0.7; /* Немного прозрачности */
-        }
-
+<style>
     </style>
 </head>
 <body>
@@ -187,6 +44,14 @@
                 <div class="form-group">
                     <label>Площадь стенки (м^2):</label>
                     <input type="text" id="square_a" readonly>
+                </div>
+                <div class="form-group">
+                    <label>Объем стенки (м^3):</label>
+                    <input type="text" id="cube_a" readonly>
+                </div>
+                <div class="form-group">
+                    <label>Количество упаковок материала:</label>
+                    <input type="text" id="count_a" readonly>
                 </div>
                 <div class="form-group">
                     <label>Cтоимость материала (rub):</label>
@@ -228,6 +93,14 @@
                     <input type="text" id="square_b" readonly>
                 </div>
                 <div class="form-group">
+                    <label>Объем стенки (м^3):</label>
+                    <input type="text" id="cube_b" readonly>
+                </div>
+                <div class="form-group">
+                    <label>Количество упаковок материала:</label>
+                    <input type="text" id="count_b" readonly>
+                </div>
+                <div class="form-group">
                     <label>Cтоимость материала (rub):</label>
                     <input type="text" id="price_out_b" readonly>
                 </div>
@@ -267,6 +140,14 @@
                     <input type="text" id="square__floor" readonly>
                 </div>
                 <div class="form-group">
+                    <label>Объем стенки (м^3):</label>
+                    <input type="text" id="cube__floor" readonly>
+                </div>
+                <div class="form-group">
+                    <label>Количество упаковок материала:</label>
+                    <input type="text" id="count__floor" readonly>
+                </div>
+                <div class="form-group">
                     <label>Cтоимость материала (rub):</label>
                     <input type="text" id="price_out__floor" readonly>
                 </div>
@@ -304,6 +185,14 @@
                 <div class="form-group">
                     <label>Площадь (м^2):</label>
                     <input type="text" id="square_top" readonly>
+                </div>
+                <div class="form-group">
+                    <label>Объем стенки (м^3):</label>
+                    <input type="text" id="cube_top" readonly>
+                </div>
+                <div class="form-group">
+                    <label>Количество упаковок материала:</label>
+                    <input type="text" id="count_top" readonly>
                 </div>
                 <div class="form-group">
                     <label>Cтоимость материала (rub):</label>
@@ -346,19 +235,23 @@
     <!-- </div> -->
     <!-- <div id="layers-inputs-container"></div> -->
     <!-- Поле для отображения периметра комнаты -->
-    <div class="form-group">
+    <!-- <div class="form-group">
         <label>Периметр стен (м):</label>
         <input type="text" id="perimeter" readonly>
-    </div>
+    </div> -->
     <!-- Поле для отображения площади комнаты -->
     <div class="form-group">
         <label>Площадь стен (м^2):</label>
         <input type="text" id="square" readonly>
     </div>
+    <div class="form-group">
+        <label>Объем стен (м^3):</label>
+        <input type="text" id="cube_wall" readonly>
+    </div>
     <!-- Поле для отображения объема комнаты -->
     <div class="form-group">
         <label>Объем внутреннего воздуха (м^3):</label>
-        <input type="text" id="cube" readonly>
+        <input type="text" id="cube_air" readonly>
     </div>
     <!-- Поле для отображения площади стенки -->
     <!-- <div class="form-group"> -->
@@ -440,7 +333,6 @@
     ">
         Рассчитать
     </button>
-        <!-- <button type="submit">Рассчитать</button> -->
     </div>
 
     <div class="room">
@@ -460,412 +352,7 @@
     
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="{% static 'heating/js/room.js' %}"></script>
     
-<script>
-function getTemperatureFromElement() {
-    var tempText = $('#external-temperature').text();
-    
-    var tempValue = tempText.replace(/[^\d.-]/g, '');
-    
-    var tempNumber = parseFloat(tempValue);
-    
-    // console.log(tempNumber);
-    return tempNumber;
-}
-function delta_math(t1, t2) {
-    if (t1 < t2) {
-        return t2 - t1
-    } else {
-            return t1 - t2
-        }
-    }
-    
-    function calc_temp_into(lambda, width, t1, t2) {
-        return lambda/width * delta_math(t1, t2);
-    }
-    
-    function plotTemperatureCurve(t1, t2, delta) {
-        // Генерация значений x от 0 до толщины стенки
-        var xValues = [];
-        var yValues = [];
-        for (var x = 0; x <= delta; x += delta / 100) {
-            xValues.push(x);
-            var tx = t1 - (delta_math(t1, t2)) / delta * x;
-            yValues.push(tx);
-        }
-        var trace = {
-            x: xValues,
-            y: yValues,
-            type: 'scatter',
-            mode: 'lines+markers',
-            marker: { size: 4 }
-        };
-        
-        var data = [trace];
-        
-        var layout = {
-            title: 'Температурная кривая в стенке',
-            xaxis: {
-                title: 'Расстояние (м)'
-            },
-            yaxis: {
-                title: 'Температура (°C)'
-            }
-        };
-
-        Plotly.newPlot('temperature-graph', data, layout);
-    }
-    
-</script>
-
-
-
-<script>
-
-function calculateThermalResistance(d, k) {
-    // Рассчитывает тепловое сопротивление стены
-    // d: Толщина стены (в метрах).
-    // k: Коэффициент теплопроводности материала стены (в Вт/(м·°C)).
-    return d / k;
-}
-function calc_square(a, b, z) {
-    return a * z * 2 + a * b * 2 + b * z * 2;
-}
-
-function calc_cube(a, b, z) {
-    return a * z * b;
-}
-
-function calc_mass(v) {
-    return 1,29 * v;
-}
-
-
-function calculateHeatLoss(deltaT, A, t, R) {
-    // Рассчитывает количество тепла, переданного через стену или стенки.
-    // deltaT: Разность температур снаружи и внутри (в градусах Цельсия).
-    // A: Площадь стены или общая площадь стенок (в квадратных метрах).
-    // t: Время в секундах.
-    // R: Тепловое сопротивление стены или стенок (в м²·°C/W).
-    return (deltaT * A * t) / R;
-}
-
-function calculateTemperatureChange(Q, m, cp) {
-    // Рассчитывает изменение температуры в помещении на основе потерь тепла.
-    // Q: Количество тепла, переданного через стену (в Джоулях).
-    // m: Масса воздуха в помещении (в кг).
-    // cp: Теплоемкость воздуха (в Дж/(кг·°C)).
-    return Q / (m * cp);
-}
-
-function updateResistor(d, k) {
-    var temp_into = calculateThermalResistance(d,k);
-    $('#temp-resistor').html('Tепловое сопротивление стены: ' + temp_into.toFixed(6) + '<br>Считается по формуле: d/k <br> d: Толщина стены (в метрах). <br>k: Коэффициент теплопроводности материала стены (в Вт/(м·°C)).<br><br>');
-    return temp_into
-}
-
-function updateHeat(deltaT, A, t, R) {
-    var temp_into = calculateHeatLoss(deltaT, A, t, R);
-    $('#temp-q').html('Kоличество тепла, переданного через стены (в Джоулях): ' + temp_into.toFixed(6) + '<br>Считается по формуле: (deltaT * A * t) / R <br> deltaT: Разность температур снаружи и внутри (в градусах Цельсия)<br>A: Площадь стены или общая площадь стенок (в квадратных метрах).<br>t: Время в секундах<br>R: Тепловое сопротивление стены или стенок (в м²·°C/W)<br><br>');
-    return temp_into
-}
-
-function updateTemperatureChange(Q, m, cp) {
-    var temp_into = calculateTemperatureChange(Q, m, cp);
-    $('#temp-t').html('Изменение температуры в помещении на основе потерь тепла: ' + temp_into.toFixed(6) + '<br>Считается по формуле: Q / (m * cp) <br> Q: Количество тепла, переданного через стену (в Джоулях).<br>m: Масса воздуха в помещении (в кг).<br>cp: Теплоемкость воздуха (в Дж/(кг·°C)).<br><br>');
-    return temp_into
-}
-
-
-    function getTemperature() {
-        var apiKey = 'e2e6375d2129535d6cc7a57b7c4d23c3';
-        var url = `http://api.openweathermap.org/data/2.5/weather?q=Moscow,ru&appid=${apiKey}&units=metric`;
-        
-        // Возвращаем Promise
-        return new Promise((resolve, reject) => {
-            $.getJSON(url, function(data) {
-                if (data && data.main && data.main.temp) {
-                    resolve(data.main.temp);
-                } else {
-                    reject("Temperature data is not available");
-                }
-        }).fail(function() {
-            reject("Failed to load temperature data");
-        });
-    });
-}
-
-async function updateTemperature() {
-    try {
-        console.log("ready")
-        var temperature = await getTemperature(); // ожидаем получения температуры
-        
-        $('#external-temperature').text('Внешняя температура в Москве: ' + temperature.toFixed(1) + '°C');
-    } catch (error) {
-        console.error("An error occurred:", error);
-        // Обработка ошибки, если API не вернул температуру
-    }
-}
-
-        // Функция для расчета
-        function calculatePerimeter(name) {
-            var width = parseFloat(document.getElementById(`width${name}`).value) / 1000;
-            var height = parseFloat(document.getElementById(`height${name}`).value) / 1000;
-            // var room_size = parseFloat(document.getElementById(`room_size${name}`).value) / 1000;
-            
-            // var price_for_meter = parseFloat(document.getElementById('price_in').value)
-            
-                // Обновляем описание формулы
-            var formulaDescription = "Периметр = (ширина + длина + высота) * 4\n\n" +
-            "Площадь стен = (ширина * высота * 2) + (длина * высота * 2) + (ширина * размер комнаты * 2) \n\n" +
-            "Объем комнаты = ширина * высота * длина.\n\n" +
-            "Площадь стены a = высота * длина.\n\n" +
-            "Площадь стены b = ширина * высота.\n\n" +
-            "Площадь пола/потолка = ширина * длина.\n\n" +
-            "Итоговая стоимость материала = цена за м^2 * площадь стен.\n\n";
-            document.getElementById('formula').innerText = formulaDescription;
-
-            // Проверяем, что все значения введены
-            // if (!isNaN(width) && !isNaN(height) && !isNaN(room_size)) {
-            if (!isNaN(width) && !isNaN(height)) {
-                // var perimeter = (width + room_size+ height) * 4;
-                var room_size = 0
-                var perimeter = (width + height) * 2;
-                var square = (width * height * 2) + room_size * height * 2 + width * room_size * 2
-                var cube = (width * height * room_size)
-                var square_a = height * room_size
-                var square_b = width * height
-                var square_floor = room_size * width
-                document.getElementById('perimeter').value = perimeter;
-                document.getElementById(`square${name}`).value = square;
-                // document.getElementById(`cube${name}`).value = cube;
-                // document.getElementById('square_a').value = square_a;
-                // document.getElementById('square_b').value = square_b;
-                // document.getElementById('square_floor').value = square_floor;
-                // if (!isNaN(price_for_meter)) {
-                    // var total_price = square * price_for_meter
-                    // document.getElementById(`price_out${name}`).value = total_price;
-                // }
-            } else {
-                // document.getElementById('perimeter').value = 'Введите все размеры';
-                document.getElementById(`square${name}`).value = 'Введите все размеры';
-                document.getElementById('cube').value = 'Введите все размеры';
-                // document.getElementById('square_a').value = 'Введите все размеры';
-                // document.getElementById('square_b').value = 'Введите все размеры';
-                // document.getElementById('square_floor').value = 'Введите все размеры';
-            }
-        }
-
-    // Добавляем обработчики событий для полей ввода
-    // document.getElementById('width_a').addEventListener('input', calculatePerimeter);
-    document.getElementById('width_a').addEventListener('input', (event) => calculatePerimeter('_a'));
-    document.getElementById('width_b').addEventListener('input', (event) => calculatePerimeter('_b'));
-    document.getElementById('width__floor').addEventListener('input', (event) => calculatePerimeter('__floor'));
-    document.getElementById('width_top').addEventListener('input', (event) => calculatePerimeter('_top'));
-    // document.getElementById('height_a').addEventListener('input', calculatePerimeter);
-    document.getElementById('height_a').addEventListener('input', (event) => calculatePerimeter('_a'));
-    document.getElementById('height_b').addEventListener('input', (event) => calculatePerimeter('_b'));
-    document.getElementById('height__floor').addEventListener('input', (event) => calculatePerimeter('__floor'));
-    document.getElementById('height_top').addEventListener('input', (event) => calculatePerimeter('_top'));
-    // document.getElementById('room_size').addEventListener('input', calculatePerimeter);
-    // document.getElementById('price_in').addEventListener('input', (event) => calculatePerimeter('_a'));
-
-
-    function add_inputs(name, layersCount) {
-        var container = document.getElementById(`layers-inputs-container${name}`);
-        // console.log(container)
-        container.innerHTML = ''; // Очищаем предыдущие поля
-        
-        // var layersCount = this.value;
-        console.log(layersCount)
-
-        for (var i = 1; i <= layersCount; i++) {
-            var layerDiv = document.createElement('div');
-            layerDiv.classList.add('layer-inputs');
-            layerDiv.innerHTML = `
-                <div class="form-group">
-                    <label for="wall-${name}-${i}-thickness">Толщина слоя ${i} (мм):</label>
-                    <input type="number" id="wall-${name}-${i}-thickness" name="wall-${name}-${i}-thickness" step="0.01" required>
-                </div>
-                <div class="form-group">
-                    <label for="wall-${name}-${i}-material">Категория слоя ${i}:</label>
-                    <select id="wall-${name}-${i}-material" name="wall-${name}-${i}-material" style="color: rgb(0, 0, 0)">
-                <option value="brick" data-lambda="0.7">Утеплитель</option>
-                <option value="concrete" data-lambda="1.1">Металл</option>
-                <option value="wood" data-lambda="0.15">Пластик</option>
-                <option value="wood" data-lambda="0.15">Газ</option>
-                <option value="wood" data-lambda="0.15">Вакум</option>
-                </select>
-                </div>
-                <div class="form-group">
-                    <label for="wall-${name}-${i}-material1">Материал слоя ${i}:</label>
-                    <select id="wall-${name}-${i}-material1" name="wall-${name}-${i}-material1" style="color: rgb(0, 0, 0)">
-                <option value="brick" data-lambda="0.7"></option>
-                <option value="concrete" data-lambda="1.1"></option>
-                <option value="wood" data-lambda="0.15"></option>
-                <option value="wood" data-lambda="0.15"></option>
-                <option value="wood" data-lambda="0.15"></option>
-                </select>
-                </div>
-                `;
-                container.appendChild(layerDiv);
-            }
-        }
-    // document.getElementById('layers-count_a').addEventListener('change', () => add_inputs('_a', this.value));
-    document.getElementById('layers-count_a').addEventListener('change', (event) => add_inputs('_a', event.target.value));
-    document.getElementById('layers-count_b').addEventListener('change', (event) => add_inputs('_b', event.target.value));
-    document.getElementById('layers-count__floor').addEventListener('change', (event) => add_inputs('__floor', event.target.value));
-    document.getElementById('layers-count_top').addEventListener('change', (event) => add_inputs('_top', event.target.value));
-        
-    function get_all_with() {
-            var layersCount = parseInt(document.getElementById('layers-count').value);
-                var totalThickness = 0;
-        
-                for (var i = 1; i <= layersCount; i++) {
-                    var thicknessInput = document.getElementById(`wall-${i}-thickness`);
-                    var thicknessValue = parseFloat(thicknessInput.value);
-                    
-                    if (!isNaN(thicknessValue)) { // Проверка, что введено числовое значение
-                        totalThickness += thicknessValue;
-                    }
-                }
-            return totalThickness
-        }
-$(document).ready(async function() {
-    updateTemperature()
-    $('#room-params').submit(async function(e) {
-        e.preventDefault(); // Предотвратить стандартную отправку формы
-        // Показываем комнату
-        // Ваши расчеты и обновление данных
-        
-        // Показываем комнату
-        
-        // Предполагаем, что вы вызовете функцию plotTemperatureCurve и другие необходимые функции здесь
-        var width = $('#width').val() / 1000;
-        var height = $('#height').val() / 1000;
-        var initialTemp = $('#initial-temp').val();
-        // var wallThickness = $('#wall-thickness').val() / 1000;
-        var wallThickness = get_all_with() / 1000;
-
-        var room_size = $('#room_size').val() / 1000;
-        var material = $('#material').find(':selected');
-        var time = $('#time').val();
-        if (!time) {
-            time = 1
-        }
-        var lambda = material.data('lambda'); // Получаем значение теплопроводности выбранного материала
-        
-        $('.room').attr('data-wall-thickness', 'Толщина стены: ' + (wallThickness * 1000) + 'мм');
-        
-        $('.width-dimension').text(width * 1000+ 'мм')
-        $('.height-dimension').text(height * 1000+ 'мм')
-        $('.temperature').text('Температура:' + initialTemp + '°C')
-        if (width > height) {
-            $('.room').css('width', '599px');
-            $('.room').css('hight', '300px');
-        } else {
-            $('.room').css('width', '300px');
-            $('.room').css('hight', '599px');
-        }
-
-        // if (wallThickness >= width/2 || wallThickness >= height/2) {
-            border_size = 10
-            if (wallThickness <= 1) {
-                border_size = 20
-            } else if (wallThickness <= 2){
-                border_size = 30
-            } else if (wallThickness <= 5){
-                border_size = 40
-            } else {
-                border_size = 40
-            }
-            $('.room').css('border', border_size + 'px solid rgb(187, 140, 0)');
-        // }
-        $('.room').css('display', 'flex');
-        
-        // Допустим, вы рассчитываете и обновляете температуру в комнате и т.д.
-        // Теперь комната будет отображаться после нажатия на кнопку "Рассчитать"
-        temp = await getTemperature();
-        plotTemperatureCurve(initialTemp, temp, 0.1);
-        setInterval(async () => {await updateTemperature()}, 600000);
-        
-        setInterval(async () => {
-            plotTemperatureCurve(25, await getTemperature(), 0.1);
-        }, 600000);
-        // console.log(temp)
-        var temp_into = calc_temp_into(lambda, 0.1, temp, initialTemp);
-        $('#temp-into').html('Теплопроводность стенки: ' + temp_into.toFixed(6) + '<br>Считается по формуле: l/w * (t1-t2)<br>l - коэффициент теплопроводимости<br>w - ширина стенки<br>t1 - t2 - разница температур');
-
-        resist = updateResistor(wallThickness, lambda)
-        // console.log(delta_math(temp, initialTemp), calc_square(height, width, room_size, time * 60, resist));
-        heat = updateHeat(delta_math(temp, initialTemp), calc_square(height, width, room_size), time * 60, resist);
-        updateTemperatureChange(heat, calc_mass(calc_cube(width, height, room_size)),1.005);
-
-    });
-    
-});
-
-function calculateInsulationRolls(wallLength, wallHeight, wallThickness, rollLength, rollHeight, rollThickness) {
-
-    const wallVolume = wallLength * wallHeight * wallThickness;
-    
-    const rollVolume = rollLength * rollHeight * rollThickness;
-    
-    const rollsNeeded = Math.ceil(wallVolume / rollVolume);
-    
-    return rollsNeeded;
-}
-</script>
 
 {% endblock %}
-<!-- 
-Для расчета потерь тепла через стену можно использовать уравнение теплопроводности:
-
-�
-=
-Δ
-�
-⋅
-�
-⋅
-�
-�
-Q= 
-R
-ΔT⋅A⋅t
-​
- 
-
-где:
-
-�
-Q — количество тепла, переданное через стену (в джоулях или ваттах, в зависимости от единиц времени 
-�
-t),
-Δ
-�
-ΔT — разность температур снаружи и внутри (в градусах Цельсия),
-�
-A — площадь стены (в квадратных метрах),
-�
-t — время в секундах,
-�
-R — тепловое сопротивление стены (в м²·°C/W).
-Тепловое сопротивление 
-�
-R для стены из пенополистерола можно рассчитать как:
-
-�
-=
-�
-�
-R= 
-k
-d
-​
- 
-
-где:
-�
-d — толщина стены (в метрах),�
-k — коэффициент теплопроводности материала стены (в Вт/(м·°C)). -->
