@@ -1,0 +1,32 @@
+{% extends "office/base.html" %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Офисный контроллер</title>
+</head>
+<body>
+    <h1>Данные об офисе</h1>
+    <div>Температура: <span id="temperature">--</span> °C</div>
+    <div>Влажность: <span id="humidity">--</span>%</div>
+
+    <script>
+        function fetchWeatherData() {
+            fetch('/office/', { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('temperature').textContent = data.temperature + ' °C';
+                    document.getElementById('humidity').textContent = data.humidity + '%';
+                })
+                .catch(error => console.error('Ошибка:', error));
+        }
+
+        setInterval(fetchWeatherData, 5000);
+
+        document.addEventListener('DOMContentLoaded', fetchWeatherData);
+    </script>
+</body>
+</html>
+{% endblock %}
