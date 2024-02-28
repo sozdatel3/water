@@ -12,7 +12,7 @@
     <div>Температура: <span id="temperature">--</span> °C</div>
     <div>Влажность: <span id="humidity">--</span>%</div>
 
-    <script>
+    <!-- <script>
         function fetchWeatherData() {
             fetch('/office/', { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
                 .then(response => response.json())
@@ -26,7 +26,24 @@
         setInterval(fetchWeatherData, 5000);
 
         document.addEventListener('DOMContentLoaded', fetchWeatherData);
-    </script>
+    </script> -->
+    <script>
+        var apiUrl = "{% url 'office_data_api' %}";
+        function fetchData() {
+            fetch(apiUrl) // Путь к API, который возвращает последние данные
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('temperature').textContent = data.temperature;
+                    document.getElementById('humidity').textContent = data.humidity;
+                });
+        }
+        
+        // Вызов fetchData каждые 5 секунд
+        setInterval(fetchData, 5000);
+        
+        // Первоначальный вызов при загрузке страницы
+        fetchData();
+        </script>
 </body>
 </html>
 {% endblock %}
