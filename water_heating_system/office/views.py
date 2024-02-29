@@ -6,8 +6,8 @@ from django.views.decorators.http import require_http_methods
 from .models import get_last_measurement, add_measurement
 
 
-def office_main_view(request):
-    return render(request, 'office/html/main.html')
+# def office_main_view(request):
+#     return render(request, 'office/html/main.html')
 
 
 # @csrf_exempt  #TODO Убрать в проде
@@ -20,10 +20,10 @@ def office_main_view(request):
 
 def office_main_view(request):
     # При AJAX-запросе возвращаем данные в JSON
-    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-        temperature = request.session.get('temperature', '--')
-        humidity = request.session.get('humidity', '--')
-        return JsonResponse({"temperature": temperature, "humidity": humidity})
+    # if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        # temperature = request.session.get('temperature', '--')
+        # humidity = request.session.get('humidity', '--')
+        # return JsonResponse({"temperature": temperature, "humidity": humidity})
     # Для обычного запроса рендерим HTML-шаблон
     return render(request, 'office/main.html')
 

@@ -27,7 +27,7 @@
 
         document.addEventListener('DOMContentLoaded', fetchWeatherData);
     </script> -->
-    <script>
+    <!-- <script>
         var apiUrl = "{% url 'office_data_api' %}";
         function fetchData() {
             fetch(apiUrl) // Путь к API, который возвращает последние данные
@@ -43,7 +43,36 @@
         
         // Первоначальный вызов при загрузке страницы
         fetchData();
-        </script>
+        </script> -->
+        <script>
+            $(document).ready(function() {
+                // Функция для получения данных
+                function fetchOfficeData() {
+                    $.ajax({
+                        url: 'api/data/', // URL к вашему API
+                        type: 'GET',
+                        dataType: 'json',
+                        success: function(data) {
+
+                            if (!data.error) {
+                                $('#temperature').text(data.temperature + '°C');
+                                $('#humidity').text(data.humidity + '%');
+                            } else {
+                                // Обработка случая, когда данных нет
+                                $('#data').text('No data available');
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            // Обработка ошибки запроса
+                            console.error("Error: " + status + " " + error);
+                        }
+                    });
+                }
+            
+                // Вызовите функцию fetchOfficeData при загрузке страницы
+                fetchOfficeData();
+            });
+            </script>
 </body>
 </html>
 {% endblock %}
