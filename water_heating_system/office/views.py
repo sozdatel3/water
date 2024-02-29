@@ -3,7 +3,7 @@ from django.shortcuts import render
 from django.http import JsonResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
-from .models import get_last_measurement, add_measurement
+from .models import get_last_measurement, add_measurement, get_all_measurement_json
 
 
 # def office_main_view(request):
@@ -48,3 +48,10 @@ def get_latest_office_data(request):
     if messurment_temp and messurment_hum:
         return JsonResponse({'temperature': messurment_temp.rate, 'humidity': messurment_hum.rate})
     return JsonResponse({'error': 'No data available'}, status=404)
+
+def get_measurements(request):
+    if mesurements := get_all_measurement_json('Office'):
+        print(mesurements)
+        return JsonResponse(mesurements, safe=False)
+    return JsonResponse({'error': 'No data available'}, status=404)
+    

@@ -9,10 +9,25 @@
     <title>Офисный контроллер</title>
 </head>
 <body>
-    <h1>Данные об офисе</h1>
+    <h1>Показатели в офисе:</h1>
     <div>Температура: <span id="temperature">--</span> °C</div>
     <div>Влажность: <span id="humidity">--</span>%</div>
-
+    <div><span id="data"></span></div>
+    
+    <button id="showMeasurements">Показать все измерения</button>
+    <table id="measurementsTable" style="display:none;">
+    <thead>
+        <tr>
+            <th>Что измеряетсятся</th>
+            <th>Измерение</th>
+            <th>Единица измерения</th>
+            <th>Дата измерения</th>
+        </tr>
+    </thead>
+    <tbody>
+        <!-- Здесь будут строки с данными -->
+    </tbody>
+    </table>
     <!-- <script>
         function fetchWeatherData() {
             fetch('/office/', { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
@@ -47,10 +62,55 @@
         </script> -->
         <script>
             $(document).ready(function() {
-                // Функция для получения данных
+                
+                
+            
+                // Вызовите функцию fetchOfficeData при загрузке страницы
+                fetchOfficeData();
+                fillTable();
+                setInterval(fetchOfficeData, 5000);
+                setInterval(fillTable, 5000);
+            });
+            </script>
+            <script>
+                function fillTable() {
+                    $('#showMeasurements').on('click', function() {
+                        $.ajax({
+                            url: 'api/measurements/', // Укажите правильный URL к вашему API
+                            type: 'GET',
+                            dataType: 'json',
+                            success: function(data) {
+                            var tableBody = $('#measurementsTable tbody');
+                            tableBody.empty(); // Очистить текущие строки в таблице
+                            if (data.length > 0) {
+                                data.forEach(function(measurement) {
+                                    console.log(measurement);
+                                    var row = '<tr>' +
+                                              '<td>' + measurement.name + '</td>' +
+                                              '<td>' + measurement.rate + '</td>' +
+                                            //   '<td>' + measurement.messerement_unit + '</td>' +
+                                              '<td>' + measurement.date + '</td>' +
+                                              '</tr>';
+                                    tableBody.append(row);
+                                });
+                                $('#measurementsTable').show(); // Показать таблицу
+                            } else {
+                                tableBody.append('<tr><td colspan="3">Нет данных</td></tr>');
+                                $('#measurementsTable').show();
+                            }
+                            },
+                            error: function(xhr, status, error) {
+                                console.error("Error: " + status + " " + error);
+                            }
+                        });
+                    });
+                }
+            </script>
+            <script>
+                // Функция для получения опказателей темп и влажности
                 function fetchOfficeData() {
                     $.ajax({
-                        url: 'api/data/', // URL к вашему API
+                        url: 'api/data/',
                         type: 'GET',
                         dataType: 'json',
                         success: function(data) {
@@ -59,7 +119,6 @@
                                 $('#temperature').text(data.temperature + '°C');
                                 $('#humidity').text(data.humidity + '%');
                             } else {
-                                // Обработка случая, когда данных нет
                                 $('#data').text('No data available');
                             }
                         },
@@ -69,11 +128,6 @@
                         }
                     });
                 }
-            
-                // Вызовите функцию fetchOfficeData при загрузке страницы
-                fetchOfficeData();
-                setInterval(fetchOfficeData, 5000);
-            });
             </script>
 </body>
 </html>

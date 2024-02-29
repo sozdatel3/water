@@ -1,0 +1,116 @@
+Performing system checks...
+
+System check identified no issues (0 silenced).
+February 29, 2024 - 13:29:02
+Django version 3.2.23, using settings 'water_heating_system.settings'
+Starting development server at http://127.0.0.1:8000/
+Quit the server with CONTROL-C.
+Temperature
+Temperature
+Temperature
+Temperature
+Temperature
+Temperature
+Temperature
+Temperature
+Temperature
+Temperature
+Temperature
+Temperature
+Temperature
+Temperature
+Temperature
+Temperature
+Temperature
+Temperature
+Temperature
+Temperature
+Temperature
+Temperature
+Temperature
+Temperature
+Temperature
+Temperature
+Temperature
+Temperature
+Temperature
+Temperature
+Temperature
+Temperature
+Temperature
+Temperature
+Temperature
+Temperature
+Temperature
+Temperature
+Temperature
+Temperature
+Temperature
+Temperature
+Temperature
+Temperature
+Temperature
+Temperature
+Temperature
+Temperature
+Temperature
+Temperature
+Temperature
+Temperature
+Temperature
+Temperature
+Temperature
+Temperature
+Temperature
+Temperature
+Temperature
+Temperature
+Temperature
+Temperature
+Temperature
+Temperature
+Temperature
+Temperature
+Temperature
+Temperature
+Temperature
+Temperature
+Temperature
+Temperature
+Temperature
+Temperature
+Temperature
+Temperature
+Temperature
+Temperature
+Temperature
+Temperature
+Temperature
+Temperature
+Temperature
+Temperature
+Temperature
+Temperature
+Temperature
+Temperature
+Performing system checks...
+
+System check identified no issues (0 silenced).
+February 29, 2024 - 13:29:48
+Django version 3.2.23, using settings 'water_heating_system.settings'
+Starting development server at http://127.0.0.1:8000/
+Quit the server with CONTROL-C.
+Performing system checks...
+
+System check identified no issues (0 silenced).
+February 29, 2024 - 13:30:13
+Django version 3.2.23, using settings 'water_heating_system.settings'
+Starting development server at http://127.0.0.1:8000/
+Quit the server with CONTROL-C.
+Performing system checks...
+
+System check identified no issues (0 silenced).
+February 29, 2024 - 13:30:21
+Django version 3.2.23, using settings 'water_heating_system.settings'
+Starting development server at http://127.0.0.1:8000/
+Quit the server with CONTROL-C.
