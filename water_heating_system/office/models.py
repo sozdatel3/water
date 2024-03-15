@@ -45,18 +45,6 @@ def get_all_measurement_json(place_name):
         for m in place_measurement
     ]
 
-# def get_all_measurement_json(place_name):
-#     place = Place.objects.filter(name = place_name).last()
-#     place_measurement = measurement.objects.filter(place_id = place)
-#     res = []
-#     for one_place in place_measurement:
-#         every_mes = {
-#             'measurement_unit': one_place.measurement_unit,
-#             'measurement_date': one_place.measurement_date,
-#             'rate': one_place.rate,
-#         }
-#         res.append(every_mes)
-#     return json.dumps(res, indent=2)
 
 class sensor(models.Model):
     name = models.CharField(max_length = 256)
