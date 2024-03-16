@@ -5,7 +5,7 @@ from django.db import models
 from django.utils import timezone
 from django.core.serializers import serialize
 from django.http import JsonResponse
-import json
+
 class Place(models.Model):
     name = models.CharField(max_length = 256, primary_key = True)
     adress = models.CharField(max_length = 256)
@@ -69,7 +69,9 @@ class Sensor(models.Model):
     qr = models.URLField(max_length = 256, default = '-', null = False, help_text = 'Введите ссылку на QR-код')
     buy_date = models.DateField(default = timezone.now)
 #Functions block start
-    
+def add_sensor (name, purpose, price, shop_url, documentation, qr):
+    #Функция добавляет данные в таблицу Sensor(place нужно сделать выпадающим)
+    Sensor.objects.create(name=name, purpose=purpose, price=price, shop_url=shop_url, documentation=documentation, qr=qr)
 #Functions block end
 class Product(models.Model):
     name = models.CharField(max_length = 256, help_text = 'Введите название товара', default = '-')
@@ -82,7 +84,9 @@ class Product(models.Model):
     qr = models.URLField(max_length = 256, default = '-', null = False, help_text = 'Введите ссылку на QR-код')
     buy_date = models.DateField(default = timezone.now)
 #Functions block start
-    
+def add_product(name, article, box_count, item_count, box_size, item_size, qr):
+#Функция добавляет данные в таблицу Product(place нужно сделать выпадающим)
+    Product.objects.create(name = name, article = article, box_count = box_count, item_count = item_count, box_size = box_size, item_size = item_size, qr = qr)
 
 #Functions block end
 class Cnc_machine(models.Model):
@@ -94,8 +98,9 @@ class Cnc_machine(models.Model):
     qr = models.URLField(max_length = 256, default = '-', null = False, help_text = 'Введите ссылку на QR-код чпу')
     buy_date = models.DateField(default = timezone.now)
 #Functions block start
-    
-
+def add_cnc_machine(name, purpose, price, documentation, qr):
+#Функция добавляет данные в таблицу Cnc_machine(place нужно сделать выпадающим)
+    Cnc_machine.objects.create(name = name, purpose = purpose, price = price, documentation = documentation, qr = qr)
 #Functions block end
 class Material(models.Model):
     name = models.CharField(max_length = 256, help_text = 'Введите название материала', default = '-')
@@ -107,8 +112,9 @@ class Material(models.Model):
     cost = models.IntegerField(default = 0, null = False, help_text = 'Введите стоимость материала')
     buy_date = models.DateField(default = timezone.now)
 #Functions block start
-
-
+def add_material(name, color, weight, amount, structure, cost):
+#Функция добавляет данные в таблицу Material(place нужно сделать выпадающим)
+    Material.objects.create(name = name, color = color, weight = weight, amount = amount, structure = structure, cost = cost)
 
 #Functions block end
 class Cnc_detail(models.Model):
@@ -119,8 +125,9 @@ class Cnc_detail(models.Model):
     documentation = models.URLField(max_length = 256, default = '-', null = False, help_text = 'Введите ссылку на документацию детали')  
     qr = models.URLField(max_length = 256, default = '-', null = False, help_text = 'Введите ссылку на QR детали')
 #Functions block start
-
-
+def add_cnc_detail(name, weight, purpose, documentation, qr):
+#Функция добавляет данные в таблицу Cnc_detail(place нужно сделать выпадающим)
+    Cnc_detail.objects.create(name = name, weight = weight, purpose = purpose, documentation = documentation, qr = qr)
 
 #Functions block end 
 class Cnc_model(models.Model):
@@ -137,6 +144,8 @@ class Cnc_model(models.Model):
     cnc_detail_documentation = models.URLField(max_length = 256, default = '-', help_text = 'Введите ссылку на документацию модели')
     qr = models.URLField(max_length = 256, default = '-', help_text = 'Введите ссылку на QR код модели')
 #Functions block start
-    
+def add_cnc_model(name, machine_id, weight, material_id, cost, amount_material, production_time, cnc_detail_id, cnc_detail_documentation, qr):
+    Cnc_model.objects.create(name = name, machine_id = machine_id, weight = weight, material_id = material_id, cost = cost, amount_material = amount_material, production_time = production_time, cnc_detail_id = cnc_detail_id, cnc_detail_documentation = cnc_detail_documentation, qr = qr)
+#Функция добавляет данные в таблицу Cnc_model(place нужно сделать выпадающим)
 
 #Functions blok end
