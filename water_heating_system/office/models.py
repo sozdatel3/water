@@ -1,5 +1,6 @@
 from email.policy import default
 from os import name
+from unittest.mock import DEFAULT
 from django.db import models
 # from django.utils import timezone
 from django.utils import timezone
@@ -9,7 +10,7 @@ from django.http import JsonResponse
 class Place(models.Model):
     name = models.CharField(max_length = 256, primary_key = True)
     adress = models.CharField(max_length = 256)
-    rent = models.IntegerField(default = 0, null = False)
+    rent = models.DecimalField(max_digits = 9,decimal_places = 2,default = 0, null = False, help_text = 'Введите стоимость аренды')
     square = models.IntegerField(default = 0, null = False)
 
 #Functions block start
@@ -51,8 +52,8 @@ class Instrument(models.Model):
     name = models.CharField(max_length = 256, help_text = 'Введите название инструмента', default = '-')
     purpose = models.TextField(null = False, help_text = 'Введите назначение инструмента', default = '-')
     shop = models.URLField( default = 'Not Found', null = False, help_text = 'Введите ссылку на инструмент')
-    price = models.IntegerField(default = '0', null = False, help_text = 'Введите цену')
-    place = models.ForeignKey(Place, on_delete = models.PROTECT, null = False)
+    price = models.DecimalField(max_digits = 9,decimal_places = 2,default = 0, null = False , help_text = 'Введите стоимость инструмента')
+    place_id = models.ForeignKey(Place, on_delete = models.PROTECT)
     qr = models.URLField( default = '-', null = False, help_text = 'Введите ссылку на QR код')
     purchase_date = models.DateField(default = timezone.now)
 #Functions block start
@@ -61,9 +62,9 @@ def add_instrument (name,purpose,shop,price,place,qr):
 #Functions block end 
 class Sensor(models.Model):
     name = models.CharField(max_length = 256)
-    place = models.ForeignKey(Place, on_delete = models.PROTECT, null = False)
+    place_id = models.ForeignKey(Place, on_delete = models.PROTECT)
     purpose = models.TextField(null = False, help_text = 'Введите назначение датчика', default = '-')
-    price = models.IntegerField(default = '0', null = False, help_text = 'Введите цену датчика')
+    price = models.DecimalField(max_digits = 9,decimal_places = 2,default = 0, null = False , help_text = 'Введите стоимость датчика')
     shop_url = models.URLField(max_length = 256, default = 'Not Found', null = False, help_text = 'Введите ссылку на интернет-магазин')
     documentation = models.URLField(max_length = 256, default = 'Not Found', null = False, help_text = 'Введите ссылку на документацию')
     qr = models.URLField(max_length = 256, default = '-', null = False, help_text = 'Введите ссылку на QR-код')
@@ -75,12 +76,13 @@ def add_sensor (name, purpose, price, shop_url, documentation, qr):
 #Functions block end
 class Product(models.Model):
     name = models.CharField(max_length = 256, help_text = 'Введите название товара', default = '-')
-    place = models.ForeignKey(Place, on_delete = models.PROTECT, null = False)
+    place_id = models.ForeignKey(Place, on_delete = models.PROTECT)
     article = models.IntegerField(default = 0, null = False, help_text = 'Введите артикул товара')
+    price = models.DecimalField(max_digits = 9,decimal_places = 2,default = 0, null = False , help_text = 'Введите стоимость товара')
     box_count = models.IntegerField(default = 0, null = False, help_text = 'Введите количество коробок')
     item_count = models.IntegerField(default = 0, null = False, help_text = 'Введите количество товара в коробке')
-    box_size = models.IntegerField(default = 0, null = False, help_text = 'Введите объем коробки')
-    item_size = models.IntegerField(default = 0, null = False, help_text = 'Введите объем товара')
+    box_size = models.FloatField(default = 0, null = False, help_text = 'Введите объем коробки')
+    item_size = models.FloatField(default = 0, null = False, help_text = 'Введите объем товара')
     qr = models.URLField(max_length = 256, default = '-', null = False, help_text = 'Введите ссылку на QR-код')
     buy_date = models.DateField(default = timezone.now)
 #Functions block start
@@ -91,9 +93,9 @@ def add_product(name, article, box_count, item_count, box_size, item_size, qr):
 #Functions block end
 class Cnc_machine(models.Model):
     name = models.CharField(max_length = 256, help_text = 'Введите название чпу', default = '-')
-    place = models.ForeignKey(Place, on_delete = models.PROTECT, null = False)
+    place_id = models.ForeignKey(Place, on_delete = models.PROTECT)
     purpose = models.CharField(max_length = 256, default = '-', null = False, help_text = 'Введите назначение чпу')
-    price = models.IntegerField(default = 0, null = False, help_text = 'Введите цену чпу')
+    price = models.DecimalField(max_digits = 9,decimal_places = 2,default = 0, null = False , help_text = 'Введите стоимость чпу станка')
     documentation = models.URLField(max_length = 256, default = '-', null = False, help_text = 'Введите ссылку на документацию чпу')
     qr = models.URLField(max_length = 256, default = '-', null = False, help_text = 'Введите ссылку на QR-код чпу')
     buy_date = models.DateField(default = timezone.now)
@@ -104,12 +106,12 @@ def add_cnc_machine(name, purpose, price, documentation, qr):
 #Functions block end
 class Material(models.Model):
     name = models.CharField(max_length = 256, help_text = 'Введите название материала', default = '-')
-    place = models.ForeignKey(Place, on_delete = models.PROTECT, null = False)
+    place_id = models.ForeignKey(Place, on_delete = models.PROTECT)
     color = models.CharField(max_length = 256, default = '-', null = False, help_text = 'Введите цвет материала')
-    weight = models.IntegerField(default = 0, null = False, help_text = 'Введите вес материала')
-    amount = models.IntegerField(default = 0, null = False, help_text = 'Введите количество материала')
+    weight = models.FloatField(default = 0, null = False, help_text = 'Введите вес материала')
+    amount = models.FloatField(default = 0, null = False, help_text = 'Введите количество материала')
     structure = models.CharField(max_length = 256, default = '-', null = False, help_text = 'Введите структуру материала')
-    cost = models.IntegerField(default = 0, null = False, help_text = 'Введите стоимость материала')
+    cost = models.DecimalField(max_digits = 9,decimal_places = 2,default = 0, null = False , help_text = 'Введите стоимость материала')
     buy_date = models.DateField(default = timezone.now)
 #Functions block start
 def add_material(name, color, weight, amount, structure, cost):
@@ -119,8 +121,8 @@ def add_material(name, color, weight, amount, structure, cost):
 #Functions block end
 class Cnc_detail(models.Model):
     name = models.CharField(max_length = 256, help_text = 'Введите название детали', default = '-')
-    place = models.ForeignKey(Place, on_delete = models.PROTECT, null = False)
-    weight = models.IntegerField(default = 0, null = False, help_text = 'Введите вес детали') 
+    place_id = models.ForeignKey(Place, on_delete = models.PROTECT)
+    weight = models.FloatField(default = 0, null = False, help_text = 'Введите вес детали') 
     purpose = models.CharField(max_length = 256, default = '-', null = False, help_text = 'Введите назначение детали')
     documentation = models.URLField(max_length = 256, default = '-', null = False, help_text = 'Введите ссылку на документацию детали')  
     qr = models.URLField(max_length = 256, default = '-', null = False, help_text = 'Введите ссылку на QR детали')
@@ -131,16 +133,16 @@ def add_cnc_detail(name, weight, purpose, documentation, qr):
 
 #Functions block end 
 class Cnc_model(models.Model):
-    name = models.IntegerField(max_length = 256, help_text = 'Введите название модели', default = '-')
-    machine_id = models.ForeignKey(Cnc_machine, on_delete = models.PROTECT, null = False)
-    place = models.ForeignKey(Place, on_delete = models.PROTECT, null = False)
-    weight = models.IntegerField(default = 0, null = False, help_text = 'Введите вес модели')
-    material_id = models.ForeignKey(Material, on_delete = models.PROTECT, null = False)
-    cost = models.IntegerField(default = 0, null = False, help_text = 'Введите стоимость модели')
+    name = models.CharField(max_length = 256, help_text = 'Введите название модели', default = '-')
+    machine_id = models.ForeignKey(Cnc_machine, on_delete = models.PROTECT)
+    place_id = models.ForeignKey(Place, on_delete = models.PROTECT)
+    weight = models.FloatField(default = 0, null = False, help_text = 'Введите вес модели')
+    material_id = models.ForeignKey(Material, on_delete = models.PROTECT)
+    cost = models.DecimalField(max_digits = 9,decimal_places = 2,default = 0, null = False , help_text = 'Введите стоимость модели')
     amount_material = models.IntegerField(default = 0, null = False, help_text = 'Введите количество материала')
-    production_time = models.IntegerField(default = 0, null = False, help_text = 'Введите время производства')
-    production_date = models.DateField(default = timezone.now())
-    cnc_detail_id = models.ForeignKey(Cnc_detail, on_delete = models.PROTECT, null = False)
+    production_time = models.FloatField(default = 0, null = False, help_text = 'Введите время производства')
+    production_date = models.DateField(default = timezone.now)
+    cnc_detail_id = models.ForeignKey(Cnc_detail, on_delete = models.PROTECT)
     cnc_detail_documentation = models.URLField(max_length = 256, default = '-', help_text = 'Введите ссылку на документацию модели')
     qr = models.URLField(max_length = 256, default = '-', help_text = 'Введите ссылку на QR код модели')
 #Functions block start
