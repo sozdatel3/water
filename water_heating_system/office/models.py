@@ -12,6 +12,9 @@ class Place(models.Model):
     adress = models.CharField(max_length = 256)
     rent = models.DecimalField(max_digits = 9,decimal_places = 2,default = 0, null = False, help_text = 'Введите стоимость аренды')
     square = models.IntegerField(default = 0, null = False)
+    
+    def __str__(self):
+        return self.name
 
 #Functions block start
 
@@ -56,6 +59,9 @@ class Instrument(models.Model):
     place_id = models.ForeignKey(Place, on_delete = models.PROTECT)
     qr = models.URLField( default = '-', null = False, help_text = 'Введите ссылку на QR код')
     purchase_date = models.DateField(default = timezone.now)
+    
+    def __str__(self):
+        return self.name
 #Functions block start
 def add_instrument (name,purpose,shop,price,place,qr):
     Instrument.objects.create(name = name, purpose = purpose, shop = shop, price = price, place = place, qr = qr)
@@ -69,6 +75,9 @@ class Sensor(models.Model):
     documentation = models.URLField(max_length = 256, default = 'Not Found', null = False, help_text = 'Введите ссылку на документацию')
     qr = models.URLField(max_length = 256, default = '-', null = False, help_text = 'Введите ссылку на QR-код')
     buy_date = models.DateField(default = timezone.now)
+    
+    def __str__(self):
+        return self.name
 #Functions block start
 def add_sensor (name, purpose, price, shop_url, documentation, qr):
     #Функция добавляет данные в таблицу Sensor(place нужно сделать выпадающим)
@@ -83,8 +92,13 @@ class Product(models.Model):
     item_count = models.IntegerField(default = 0, null = False, help_text = 'Введите количество товара в коробке')
     box_size = models.FloatField(default = 0, null = False, help_text = 'Введите объем коробки')
     item_size = models.FloatField(default = 0, null = False, help_text = 'Введите объем товара')
+    image = models.ImageField(upload_to='item_images')
     qr = models.URLField(max_length = 256, default = '-', null = False, help_text = 'Введите ссылку на QR-код')
     buy_date = models.DateField(default = timezone.now)
+    
+    def __str__(self):
+        return f'Наименование: {self.name}| Артикул: {self.article}'
+    
 #Functions block start
 def add_product(name, article, box_count, item_count, box_size, item_size, qr):
 #Функция добавляет данные в таблицу Product(place нужно сделать выпадающим)
@@ -99,6 +113,9 @@ class Cnc_machine(models.Model):
     documentation = models.URLField(max_length = 256, default = '-', null = False, help_text = 'Введите ссылку на документацию чпу')
     qr = models.URLField(max_length = 256, default = '-', null = False, help_text = 'Введите ссылку на QR-код чпу')
     buy_date = models.DateField(default = timezone.now)
+    
+    def __str__(self):
+        return self.name
 #Functions block start
 def add_cnc_machine(name, purpose, price, documentation, qr):
 #Функция добавляет данные в таблицу Cnc_machine(place нужно сделать выпадающим)
@@ -113,6 +130,10 @@ class Material(models.Model):
     structure = models.CharField(max_length = 256, default = '-', null = False, help_text = 'Введите структуру материала')
     cost = models.DecimalField(max_digits = 9,decimal_places = 2,default = 0, null = False , help_text = 'Введите стоимость материала')
     buy_date = models.DateField(default = timezone.now)
+    
+    
+    def __str__(self):
+        return self.name
 #Functions block start
 def add_material(name, color, weight, amount, structure, cost):
 #Функция добавляет данные в таблицу Material(place нужно сделать выпадающим)
@@ -126,6 +147,10 @@ class Cnc_detail(models.Model):
     purpose = models.CharField(max_length = 256, default = '-', null = False, help_text = 'Введите назначение детали')
     documentation = models.URLField(max_length = 256, default = '-', null = False, help_text = 'Введите ссылку на документацию детали')  
     qr = models.URLField(max_length = 256, default = '-', null = False, help_text = 'Введите ссылку на QR детали')
+    
+    
+    def __str__(self):
+        return self.name
 #Functions block start
 def add_cnc_detail(name, weight, purpose, documentation, qr):
 #Функция добавляет данные в таблицу Cnc_detail(place нужно сделать выпадающим)
@@ -145,6 +170,10 @@ class Cnc_model(models.Model):
     cnc_detail_id = models.ForeignKey(Cnc_detail, on_delete = models.PROTECT)
     cnc_detail_documentation = models.URLField(max_length = 256, default = '-', help_text = 'Введите ссылку на документацию модели')
     qr = models.URLField(max_length = 256, default = '-', help_text = 'Введите ссылку на QR код модели')
+    
+    
+    def __str__(self):
+        return self.name
 #Functions block start
 def add_cnc_model(name, machine_id, weight, material_id, cost, amount_material, production_time, cnc_detail_id, cnc_detail_documentation, qr):
     Cnc_model.objects.create(name = name, machine_id = machine_id, weight = weight, material_id = material_id, cost = cost, amount_material = amount_material, production_time = production_time, cnc_detail_id = cnc_detail_id, cnc_detail_documentation = cnc_detail_documentation, qr = qr)
